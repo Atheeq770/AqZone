@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+<title>Atheeq Games — Sussy Question (Pass & Play)</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#06070a;
+    --card:#071021;
+    --accent:#ff4d6d;
+    --accent2:#7c3aed;
+    --muted:#9aa4b2;
+    --glass:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    font-family:Rubik,Inter,system-ui,Segoe UI,Roboto,Arial;
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(800px 400px at 10% 10%, rgba(124,58,237,0.09), transparent),
+      linear-gradient(180deg,#03040a 0%, #071022 100%);
+    color:#e8eef8;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:18px
+  }
+  .app{
+    width:100%;
+    max-width:980px;
+    background:var(--card);
+    border-radius:16px;
+    padding:16px;
+    box-shadow:0 12px 40px rgba(2,6,23,0.7);
+    border:1px solid rgba(255,255,255,0.03)
+  }
+  header{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:56px;height:56px;
+    border-radius:12px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;color:#021;
+    box-shadow:0 6px 18px rgba(124,58,237,0.12)
+  }
+  h1{margin:0;font-size:18px}
+  p.lead{margin:0;color:var(--muted);font-size:13px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+  input,select,button,textarea{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.03);
+    color:inherit;
+    padding:10px;
+    border-radius:10px;
+    font-size:15px;
+    width:100%
+  }
+  textarea{min-height:88px;resize:vertical}
+  .col{flex:1 1 260px;min-width:220px}
+  .controls{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  button.primary{
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    border:none;color:#021;cursor:pointer;
+    padding:10px 14px;border-radius:10px;
+    font-weight:600
+  }
+  button.ghost{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.04);
+    color:var(--muted);
+    cursor:pointer;
+    padding:10px 12px;border-radius:10px
+  }
+  .card{
+    background:rgba(255,255,255,0.02);
+    padding:14px;border-radius:12px;
+    border:1px solid rgba(255,255,255,0.02)
+  }
+  .center{text-align:center}
+  .big{font-size:26px;font-weight:700;color:#fff}
+  .muted-small{color:var(--muted);font-size:13px}
+  .pill{
+    background:rgba(255,255,255,0.02);
+    padding:6px 10px;border-radius:999px;
+    border:1px solid rgba(255,255,255,0.02);
+    display:inline-block
+  }
+  .secret{display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;padding:12px}
+  .reveal-word{
+    font-size:20px;font-weight:700;
+    padding:12px 16px;border-radius:10px;
+    background:linear-gradient(90deg, rgba(255,255,255,0.03), transparent);
+    min-width:160px;text-align:center
+  }
+  .hidden{display:none}
+  footer{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
+  .accent-note{color:var(--accent);font-weight:600}
+  .tiny{font-size:12px;color:var(--muted)}
+  .neon{text-shadow:0 6px 18px rgba(124,58,237,0.12)}
+  .big-cta{font-size:16px;padding:12px 16px}
+  @media (max-width:540px){
+    body{padding:12px}
+    .row{flex-direction:column}
+    .logo{width:48px;height:48px}
+    h1{font-size:16px}
+    .big{font-size:20px}
+  }
+</style>
+</head>
+
+<body>
+<div class="app" role="application" aria-labelledby="title">
+  <header>
+    <div class="logo neon">AG</div>
+    <div>
+      <h1 id="title">Atheeq Games — Sussy Question</h1>
+      <p class="lead">Pass & Play • Mobile optimized • Secret reveals • Bluffer advantage</p>
+    </div>
+  </header>
+
+  <section class="row">
+    <div class="col card">
+      <label>Number of players (5–10)</label>
+      <input type="number" id="numPlayers" min="5" max="10" value="6" />
+
+      <label style="margin-top:10px">Words (editable) — Randomize to auto-fill</label>
+      <textarea id="words">Birthday,Toothbrush,Laptop,Wallet,Charger,Watch</textarea>
+
+      <div class="controls" style="margin-top:8px">
+        <button class="primary" id="randomizeBtn">Randomize Words</button>
+        <button class="ghost" id="startBtn">Start Game</button>
+      </div>
+
+      <div class="tiny" style="margin-top:8px">
+        Tip: You can edit these words after randomizing. One player will become the bluffer ("?") or get a different word.
+      </div>
+    </div>
+
+    <div class="col card center">
+      <div class="muted-small">Round Theme</div>
+      <div class="big neon" id="themeDisplay">Mixed Items</div>
+      <div class="muted-small" style="margin-top:8px">
+        Pass the phone face-down for reveals. Let the chaos begin.
+      </div>
+      <div id="legend" class="muted-small" style="margin-top:12px">
+        Bluffer advantage ON — they’re more likely to be targeted in Ask Mode 😈
+      </div>
+    </div>
+  </section>
+
+  <section id="playArea" class="hidden" style="margin-top:12px">
+    <div class="row">
+      <div class="col card center">
+        <div class="muted-small">
+          Player <span class="pill" id="currentPlayerNum">1</span> of <span class="pill" id="totalPlayers">6</span>
+        </div>
+
+        <div class="secret" id="secretPane">
+          <div class="muted-small">Tap to reveal your card</div>
+          <button class="primary big-cta" id="revealBtn">Reveal</button>
+
+          <div id="revealed" class="hidden">
+            <div class="reveal-word" id="yourWord">???</div>
+            <div class="muted-small">Press NEXT to move to the next player</div>
+
+            <div class="controls" style="margin-top:10px">
+              <button class="primary" id="nextPlayerBtn">Next</button>
+              <button class="ghost" id="reopenBtn">Reopen Reveal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col card center">
+
+        <div id="askPhase" class="hidden">
+          <div class="muted-small">Ask-phase: Click NEXT ASK when ready</div>
+          <div class="big" style="margin-top:10px">Next Ask</div>
+
+          <div class="muted-small" style="margin-top:10px">Prompt:</div>
+          <div class="reveal-word" id="askPrompt" style="margin-top:12px">Player 1 → Player 2</div>
+
+          <div class="controls" style="margin-top:12px">
+            <button class="primary" id="nextAskBtn">Next Ask</button>
+            <button class="ghost" id="finishBtn">Finish & Reveal</button>
+          </div>
+
+          <div class="tiny" style="margin-top:10px">
+            App randomizes ask/target. Bluffer gets targeted more often 🔥
+          </div>
+        </div>
+
+        <div id="votingArea" class="hidden" style="margin-top:8px">
+          <div class="muted-small">Vote: Who is the odd one?</div>
+          <label style="margin-top:10px">Your vote</label>
+          <select id="voteSelect"></select>
+
+          <div class="controls" style="margin-top:10px">
+            <button class="primary" id="revealResultBtn">Reveal True Odd One</button>
+            <button class="ghost" id="newGameBtn">New Game</button>
+          </div>
+
+          <div id="resultPane" class="hidden" style="margin-top:12px">
+            <div class="center">
+              <div class="big" id="oddNumber">#</div>
+              <div class="muted-small" id="oddWord">Word: ...</div>
+              <div class="muted-small accent-note" id="oddWas"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="muted-small">
+      Made by Atheeq Games • Shareable • Mobile-friendly • Pure chaos
+    </div>
+  </footer>
+</div>
+
+
+<script>
+(function(){
+
+  const WORD_POOL = [
+    "Birthday","Toothbrush","Laptop","Wallet","Charger","Watch","Samosa","Tea","Idli","Phone",
+    "Remote","Shoe","Perfume","Spectacles","Camera","Book","Bottle","Keys","Earphones","Lamp",
+    "Pillow","Towel","Bicycle","Scooter","Notebook","Pen","Sunglasses","Mask","Rice","Candle",
+    "TV","Fan","Cup","Plate","Chair","Table","Bag","Umbrella","Purse","Mouse","Keyboard",
+    "Mango","Banana","Apple","Kettle","Pan","Spoon","Fork","Soap","Shampoo","Toothpaste",
+    "Helmet","Gloves","Scarf","Blanket","Ticket","Passport","Laptop bag","Adapter","Calendar",
+    "Diary","Keychain","Slippers","Clock"
+  ];
+
+  const random = arr => arr[Math.floor(Math.random()*arr.length)];
+  const shuffle = arr => arr.sort(()=>Math.random()-0.5);
+
+  const randomizeBtn = document.getElementById("randomizeBtn");
+  const startBtn = document.getElementById("startBtn");
+  const numPlayersEl = document.getElementById("numPlayers");
+  const wordsEl = document.getElementById("words");
+  const playArea = document.getElementById("playArea");
+  const totalPlayersSpan = document.getElementById("totalPlayers");
+  const currentPlayerNum = document.getElementById("currentPlayerNum");
+  const revealBtn = document.getElementById("revealBtn");
+  const revealed = document.getElementById("revealed");
+  const yourWord = document.getElementById("yourWord");
+  const nextPlayerBtn = document.getElementById("nextPlayerBtn");
+  const reopenBtn = document.getElementById("reopenBtn");
+  const askPhase = document.getElementById("askPhase");
+  const askPrompt = document.getElementById("askPrompt");
+  const nextAskBtn = document.getElementById("nextAskBtn");
+  const finishBtn = document.getElementById("finishBtn");
+  const voteSelect = document.getElementById("voteSelect");
+  const revealResultBtn = document.getElementById("revealResultBtn");
+  const resultPane = document.getElementById("resultPane");
+  const oddNumber = document.getElementById("oddNumber");
+  const oddWord = document.getElementById("oddWord");
+  const oddWas = document.getElementById("oddWas");
+  const newGameBtn = document.getElementById("newGameBtn");
+  const themeDisplay = document.getElementById("themeDisplay");
+
+  let state = {};
+
+  randomizeBtn.onclick = () => {
+    const sample = shuffle([...WORD_POOL]).slice(0, 10);
+    wordsEl.value = sample.join(",");
+    themeDisplay.textContent = "Mixed Items";
+  };
+
+  startBtn.onclick = () => {
+    const n = +numPlayersEl.value;
+    const raw = wordsEl.value.split(",").map(x => x.trim()).filter(Boolean);
+
+    state.n = n;
+    state.words = raw;
+    state.assignments = [];
+    state.currentPlayer = 0;
+
+    const baseWord = random(raw);
+    for (let i=0;i<n;i++) state.assignments.push(baseWord);
+
+    const oddIndex = state.oddIndex = Math.floor(Math.random()*n);
+    const useReal = (raw.length > 1 && Math.random() > 0.5);
+
+    if(useReal){
+      const diff = raw.filter(w=>w!==baseWord);
+      state.assignments[oddIndex] = diff.length ? random(diff) : random(raw);
+    } else {
+      state.assignments[oddIndex] = "?";
+    }
+
+    playArea.classList.remove("hidden");
+    revealed.classList.add("hidden");
+
+    totalPlayersSpan.textContent = n;
+    currentPlayerNum.textContent = 1;
+
+    voteSelect.innerHTML = "";
+    for(let i=0;i<n;i++){
+      const o = document.createElement("option");
+      o.value = i; o.textContent = "Player " + (i+1);
+      voteSelect.appendChild(o);
+    }
+  };
+
+  revealBtn.onclick = () => {
+    const idx = state.currentPlayer;
+    const val = state.assignments[idx];
+    yourWord.textContent = (val === "?") ? "?? (Bluffer)" : val;
+    revealed.classList.remove("hidden");
+  };
+
+  reopenBtn.onclick = () => revealed.classList.toggle("hidden");
+
+  nextPlayerBtn.onclick = () => {
+    state.currentPlayer++;
+    if(state.currentPlayer >= state.n){
+      askPhase.classList.remove("hidden");
+      updateAsk();
+      document.getElementById("secretPane").classList.add("hidden");
+      return;
+    }
+    currentPlayerNum.textContent = state.currentPlayer + 1;
+    yourWord.textContent = "???";
+    revealed.classList.add("hidden");
+  };
+
+  function updateAsk(){
+    const n = state.n;
+    const asker = Math.floor(Math.random()*n);
+    let target = random([...Array(n).keys()]);
+
+    if(Math.random() < 0.3) target = state.oddIndex;
+    if(target === asker){
+      const others = [...Array(n).keys()].filter(i=>i!==asker);
+      target = random(others);
+    }
+
+    askPrompt.textContent = `Player ${asker+1} → Player ${target+1}`;
+  }
+
+  nextAskBtn.onclick = updateAsk;
+
+  finishBtn.onclick = () => {
+    askPhase.classList.add("hidden");
+    document.getElementById("votingArea").classList.remove("hidden");
+  };
+
+  revealResultBtn.onclick = () => {
+    const odd = state.oddIndex;
+    oddNumber.textContent = "#" + (odd+1);
+    const val = state.assignments[odd];
+    oddWord.textContent = (val==="?" ? "They had no word (Bluffer)" : "Word: " + val);
+    oddWas.textContent = (val==="?" ? "They were the bluffer!" : "They had a different word!");
+    resultPane.classList.remove("hidden");
+  };
+
+  newGameBtn.onclick = () => location.reload();
+
+})();
+</script>
+
+</body>
+</html>
