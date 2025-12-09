@@ -379,7 +379,15 @@
   // Create a Firebase project and enable Realtime Database (rules temporary open).
   // I include an init function that uses these values.
   // ------------------------------------------
-  const FIREBASE_CONFIG = null; // <<---- Paste your Firebase config object here
+  const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCNNaLM1205wPDIVG_qgXeQlOOu7ETKIrA",
+  authDomain: "aqzone-molehunt.firebaseapp.com",
+  databaseURL: "https://aqzone-molehunt-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "aqzone-molehunt",
+  storageBucket: "aqzone-molehunt.firebasestorage.app",
+  messagingSenderId: "163779869604",
+  appId: "1:163779869604:web:f2212393194092c7565f31"
+}; // <<---- Paste your Firebase config object here
 
   // We'll dynamically load firebase script when needed
   let firebaseApp = null, firebaseDB = null;
