@@ -2,496 +2,1157 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>Atheeq Games — Sussy Question (Spy Show)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+<title>AqZone — MoleHunt</title>
+<meta name="description" content="AqZone — MoleHunt. Party deduction game. Mobile & Desktop. Firebase P2P signaling built-in (paste your config)." />
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&display=swap" rel="stylesheet">
-
 <style>
-/* ============================================================
-   ROOT THEME VARIABLES — SPY SHOW + FUN COLORFUL DESIGN
-============================================================ */
-:root{
-  --bg:#071022;
-  --card:#0e2433;
-  --primary:#FFD93D;
-  --accent:#2DE2E6;
-  --pink:#FF4D8C;
-  --lime:#9EF01A;
-  --text:#E0E1DD;
-  --mute:#9aa4b2;
-  --glass:rgba(255,255,255,0.03);
-  --max-w:500px;
-}
+  /* ===========================
+     AqZone — MoleHunt styles (Warm Citrus)
+     =========================== */
+  :root{
+    --bg:#fff9f2;
+    --card:#fff;
+    --text:#09121a;
+    --muted:#6b7280;
+    --accent1:#ffb84d; /* warm citrus yellow/orange */
+    --accent2:#ff5fa8; /* magenta */
+    --accent3:#ff8a4d;
+    --glass: rgba(9,18,26,0.03);
+    --max-w-mobile:720px;
+    --max-w-desktop:1200px;
+    --shadow: 0 12px 40px rgba(8,10,14,0.06);
+    --safe-bottom:18px;
+  }
+  html,body{height:100%;margin:0;font-family:Rubik,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:linear-gradient(180deg,#fffdfb,#fff9f2);color:var(--text);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--max-w-desktop);margin:0 auto;padding:18px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:900;color:#031}
+  h1{margin:0;font-size:20px}
+  .lead{color:var(--muted);font-size:13px}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.03)}
+  .grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+  @media(min-width:980px){ .grid{grid-template-columns:1fr 380px} }
 
-/* ============================================================
-   BASE STYLES
-============================================================ */
-*{box-sizing:border-box;}
-html,body{
-  height:100%;
-  margin:0;
-  font-family:"Rubik",system-ui;
-  background:linear-gradient(120deg,#083048,#071022);
-  color:var(--text);
-  -webkit-font-smoothing:antialiased;
-}
+  /* launcher grid (cards) */
+  .launcher{display:grid;grid-template-columns:repeat(1,1fr);gap:12px}
+  @media(min-width:900px){ .launcher{grid-template-columns:repeat(3,1fr);} }
+  .game-card{padding:18px;border-radius:14px;position:relative;overflow:hidden;cursor:pointer;transition:transform .22s ease,box-shadow .22s;display:flex;flex-direction:column;gap:8px}
+  .game-card:hover{transform:translateY(-6px);box-shadow:0 18px 44px rgba(8,10,14,0.08)}
+  .featured{grid-column:span 1;}
+  @media(min-width:900px){ .featured{grid-column:span 2;} }
+  .game-title{font-weight:800;font-size:18px}
+  .game-sub{color:var(--muted);font-size:13px}
+  .game-badge{position:absolute;right:12px;top:12px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent1),var(--accent2));font-weight:700;color:#051;font-size:13px}
 
-.container{
-  width:100%;
-  max-width:var(--max-w);
-  margin:0 auto;
-  padding:16px;
-}
+  /* controls */
+  label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
+  input[type="number"],textarea,select,input[type="text"]{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:transparent}
+  textarea{min-height:80px;resize:vertical}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .btn{padding:10px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:800}
+  .btn-primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#021}
+  .btn-ghost{background:transparent;border:1px solid rgba(0,0,0,0.06);color:var(--muted)}
 
-/* ============================================================
-   HEADERS + LOGO
-============================================================ */
-.header{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:24px;
-}
-.logo{
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  background:var(--accent);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:#000;
-  font-weight:700;
-}
-.title-block h1{
-  font-size:22px;
-  margin:0;
-  font-weight:800;
-}
-.title-block small{
-  color:var(--mute);
-}
+  /* reveal card */
+  .card-flip{width:100%;max-width:560px;height:170px;margin:12px auto;perspective:1200px}
+  .card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+  .card-front,.card-back{position:absolute;inset:0;border-radius:12px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;padding:12px}
+  .card-front{background:linear-gradient(90deg,rgba(255,255,255,0.95),rgba(255,255,255,0.98));font-weight:800;border:1px solid rgba(0,0,0,0.04)}
+  .card-back{transform:rotateY(180deg);background:linear-gradient(90deg,var(--accent2),var(--accent1));color:#021;font-weight:900}
 
-/* ============================================================
-   CARDS & INPUTS
-============================================================ */
-.card{
-  background:var(--card);
-  padding:16px;
-  margin-bottom:18px;
-  border-radius:14px;
-  box-shadow:0 10px 22px rgba(0,0,0,0.3);
-}
+  /* sticky action */
+  .sticky{position:fixed;right:18px;bottom:calc(var(--safe-bottom));z-index:60}
+  .sticky .btn-primary{padding:14px 18px;border-radius:12px}
 
-.card h2{
-  margin-top:0;
-  font-size:18px;
-  font-weight:700;
-}
+  /* avatars */
+  .avatars{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .avatar{width:56px;height:56px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:800;background:#f5f5f7;color:#111;position:relative}
+  .avatar.small{width:44px;height:44px}
+  .avatar.bounce{animation:bounce 900ms ease-in-out infinite}
+  .avatar.pulse{animation:pulse 1600ms ease-in-out infinite}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,95,168,0.08)}50%{box-shadow:0 12px 28px rgba(255,95,168,0.08)}100%{box-shadow:0 0 0 0 rgba(255,95,168,0.00)}}
 
-input, textarea, select{
-  width:100%;
-  padding:10px;
-  border-radius:8px;
-  border:none;
-  margin-top:6px;
-  background:var(--glass);
-  color:var(--text);
-}
+  /* modal overlay */
+  .overlay{position:fixed;inset:0;background:rgba(3,6,12,0.5);display:flex;align-items:center;justify-content:center;z-index:100;visibility:hidden;opacity:0;transition:opacity .18s}
+  .overlay.show{visibility:visible;opacity:1}
+  .modal{width:94%;max-width:980px;border-radius:12px;padding:14px;background:linear-gradient(180deg,#fff,#fffdfb);}
 
-.btn{
-  padding:12px 20px;
-  border-radius:10px;
-  background:var(--primary);
-  color:#000;
-  border:none;
-  font-weight:700;
-  cursor:pointer;
-  margin:6px 0;
-}
-.btn-pink{ background:var(--pink); color:#fff; }
-.btn-accent{ background:var(--accent); color:#000; }
+  /* discussion map */
+  .map{width:100%;height:220px;background:linear-gradient(180deg,rgba(255,248,240,0.6),transparent);border-radius:10px;padding:10px;position:relative}
+  svg.map-svg{width:100%;height:100%;overflow:visible}
+  .map-legend{font-size:13px;color:var(--muted);margin-top:8px}
 
-/* ============================================================
-   AVATARS
-============================================================ */
-.avatars{
-  display:flex;
-  gap:8px;
-  margin-top:10px;
-}
-.avatar{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  background:#222;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-weight:700;
-  color:#fff;
-  transition:transform 0.2s, box-shadow 0.2s;
-}
-.avatar.bounce{ transform:translateY(-4px); box-shadow:0 0 10px var(--primary); }
-.avatar.pulse{ box-shadow:0 0 12px var(--accent); }
+  /* small responsive tweaks */
+  @media(max-width:760px){
+    .avatar{width:48px;height:48px}
+    .card-flip{height:180px}
+    .sticky{left:10px;right:10px}
+  }
 
-/* ============================================================
-   STICKY BOTTOM BAR
-============================================================ */
-.sticky{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  background:#0005;
-  backdrop-filter:blur(10px);
-  display:flex;
-  justify-content:center;
-  padding:16px;
-}
-.sticky-btn{
-  width:var(--max-w);
-  padding:14px;
-  border-radius:12px;
-  border:none;
-  font-weight:700;
-  background:var(--primary);
-  color:#000;
-  cursor:pointer;
-}
+  /* tutorial card */
+  .tutorial{display:flex;gap:12px;align-items:center;justify-content:center;padding:18px;border-radius:12px;background:linear-gradient(90deg,rgba(255,255,255,0.9),rgba(255,250,245,0.95));}
 
-/* ============================================================
-   MODAL FIXED (always works)
-============================================================ */
-.modal{
-  position:fixed;
-  inset:0;
-  background:#0009;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-  visibility:hidden;
-}
-.modal.active{ visibility:visible; }
-.modal-card{
-  background:var(--card);
-  padding:20px;
-  border-radius:16px;
-  width:90%;
-  max-width:380px;
-}
-.modal-card button{
-  margin-top:16px;
-  width:100%;
-}
-
-.hidden{ display:none; }
-
+  /* utility classes */
+  .muted{color:var(--muted)}
+  .hidden{display:none}
+  .center{text-align:center}
+  .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#021;font-weight:900}
+  .small{font-size:13px;color:var(--muted)}
+  .top-right{position:absolute;right:12px;top:12px}
+  .host-badge{font-size:12px;padding:6px 8px;border-radius:8px;background:#fff8e6;color:#111;border:1px solid rgba(0,0,0,0.04)}
 </style>
 </head>
-
 <body>
-<div class="container">
+  <div class="wrap" id="app">
+    <!-- HEADER -->
+    <header>
+      <div class="brand">
+        <div class="logo">AQ</div>
+        <div>
+          <h1>AqZone</h1>
+          <div class="lead">MoleHunt — hunt the odd one out</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="small muted" id="statusText">Offline</div>
+        <label style="display:flex;align-items:center;gap:8px">
+          <input type="checkbox" id="darkToggle" /> Dark
+        </label>
+      </div>
+    </header>
 
-<!-- ============================================================
-     HEADER
-============================================================ -->
-<div class="header">
-  <div class="logo">AG</div>
-  <div class="title-block">
-    <h1>Atheeq Games</h1>
-    <small>Sussy Question — Spy Show Edition</small>
+    <!-- MAIN LAYOUT -->
+    <main style="margin-top:12px">
+      <div class="grid">
+        <!-- LEFT: Launcher & Setup -->
+        <div>
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div class="pill">AqZone</div>
+                <div class="small muted" style="margin-top:6px">Multi-game party hub</div>
+              </div>
+              <div style="text-align:right">
+                <div class="small muted">Welcome, Host</div>
+                <div class="host-badge">Host</div>
+              </div>
+            </div>
+
+            <!-- Settings: players slider (custom) -->
+            <div style="margin-top:12px">
+              <label>Players</label>
+              <div style="display:flex;align-items:center;gap:12px">
+                <input id="playerSlider" type="range" min="5" max="10" value="6" style="flex:1" />
+                <div id="playerCount" class="small" style="width:46px;text-align:center">6</div>
+              </div>
+            </div>
+
+            <!-- Words -->
+            <div style="margin-top:12px">
+              <label>Hidden words (host only) — up to 150 (comma separated)</label>
+              <textarea id="wordBank" placeholder="Type or paste words, comma separated. Max 150." ></textarea>
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <button id="autoWords" class="btn btn-ghost">Auto-generate</button>
+                <button id="clearWords" class="btn btn-ghost">Clear</button>
+                <div class="small muted" style="align-self:center">Count: <span id="wordCount">0</span></div>
+              </div>
+            </div>
+
+            <!-- Game controls -->
+            <div style="margin-top:12px;display:flex;gap:8px">
+              <button id="createRoomBtn" class="btn btn-primary">Create Private Room (PIN)</button>
+              <button id="publicSetupBtn" class="btn btn-ghost">Share Setup Link</button>
+            </div>
+
+            <div class="small muted" style="margin-top:8px">Sound off by default. Players join via link or PIN. Rooms auto-expire after 24 hours.</div>
+          </div>
+
+          <!-- Launcher -->
+          <div class="launcher" style="margin-top:12px">
+            <!-- Featured (MoleHunt) -->
+            <div class="game-card featured card" id="card-molehunt" data-game="molehunt" style="background:linear-gradient(135deg,#fffaf0,#fff4ea)">
+              <div class="game-badge">Featured</div>
+              <div class="game-title">MoleHunt</div>
+              <div class="game-sub">Ask. Review your clues. Vote. Find the mole.</div>
+              <div style="margin-top:12px" class="small muted">Players: 5–10</div>
+            </div>
+            <!-- Other sample games -->
+            <div class="game-card card" id="card-guessliar"><div class="game-title">GuessTheLiar</div><div class="game-sub">Short rounds. Fast accusations.</div></div>
+            <div class="game-card card" id="card-mafia"><div class="game-title">Mafia / Werewolf</div><div class="game-sub">Classic social elimination.</div></div>
+            <div class="game-card card" id="card-soon1"><div class="game-title">Coming Soon</div><div class="game-sub">More games on the way</div></div>
+            <div class="game-card card" id="card-soon2"><div class="game-title">Coming Soon</div><div class="game-sub">Stay tuned</div></div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: Lobby / Room / Settings -->
+        <aside>
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div class="small muted">Room</div>
+                <div id="roomIdDisplay" style="font-weight:800">No Room</div>
+              </div>
+              <div style="text-align:right">
+                <div class="small muted">Players</div>
+                <div id="joinedCount" style="font-weight:900">0/0</div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px">
+              <div class="small muted">Lobby</div>
+              <div id="lobbyList" style="margin-top:8px"></div>
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:8px">
+              <button id="startGameBtn" class="btn btn-primary" disabled>Start Mission</button>
+              <button id="endRoomBtn" class="btn btn-ghost" disabled>End Room</button>
+            </div>
+
+            <div style="margin-top:12px" class="small muted">
+              <div>Share link / QR</div>
+              <div style="display:flex;gap:8px;margin-top:6px">
+                <input id="shareLink" type="text" readonly style="flex:1" />
+                <button id="copyLink" class="btn btn-ghost">Copy</button>
+              </div>
+              <div id="qrWrap" style="margin-top:8px"></div>
+            </div>
+          </div>
+
+          <!-- Settings -->
+          <div class="card" style="margin-top:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="font-weight:800">Settings</div>
+              <div class="small muted">Local</div>
+            </div>
+
+            <div style="margin-top:12px">
+              <label>Animations</label>
+              <select id="animSelect"><option value="auto">Auto</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+            </div>
+
+            <div style="margin-top:12px">
+              <label>Sounds</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="checkbox" id="soundToggle" /> Enable sounds
+              </div>
+            </div>
+
+            <div style="margin-top:12px" class="small muted">Your settings are stored locally.</div>
+          </div>
+
+        </aside>
+      </div>
+    </main>
+
+    <!-- Sticky action -->
+    <div class="sticky"><button id="stickyPrimary" class="btn btn-primary">Next</button></div>
   </div>
-</div>
 
-<!-- ============================================================
-     SETUP SCREEN
-============================================================ -->
-<div id="setupScreen">
-
-  <div class="card">
-    <h2>Number of players (5–10)</h2>
-    <input type="number" id="playerCount" min="5" max="10" value="6">
+  <!-- OVERLAY / MODAL for game panels -->
+  <div id="overlay" class="overlay" role="dialog" aria-hidden="true">
+    <div class="modal" id="modalContent">
+      <!-- dynamic content inserted here -->
+    </div>
   </div>
 
-  <div class="card">
-    <h2>Words</h2>
-    <textarea id="wordList" rows="2">Birthday,Toothbrush,Laptop,Wallet,Charger,Watch</textarea>
-    <button class="btn-accent" id="randomizeWords">Randomize</button>
-  </div>
+  <!-- Confetti canvas -->
+  <canvas id="confettiCanvas" style="position:fixed;inset:0;pointer-events:none;z-index:120"></canvas>
 
-  <div class="card">
-    <h2>Ask Rules</h2>
-    <label>Minimum asks per player</label>
-    <input type="number" id="minAsks" value="1">
-    <label>Total turns (0 = auto)</label>
-    <input type="number" id="totalTurns" value="0">
-  </div>
-
-  <div class="card">
-    <h2>Prompts</h2>
-    <textarea id="prompts" rows="2">How often do you use it?,Can it fit in a pocket?,Is it expensive?,Would you take it outside?,Does it make noise?</textarea>
-  </div>
-
-  <button class="btn" id="startGame">Start Game</button>
-
-</div><!-- end setup -->
-
-
-<!-- ============================================================
-     REVEAL SCREEN
-============================================================ -->
-<div id="revealScreen" class="hidden card">
-  <h2 id="revealTitle">Player 1 — Tap to reveal</h2>
-  <button class="btn-pink" id="tapReveal">Reveal</button>
-  <button class="btn" id="nextReveal">Next</button>
-</div>
-
-<!-- ============================================================
-     ASK PHASE
-============================================================ -->
-<div id="askScreen" class="hidden card">
-  <h2 id="askHeader">Ask Phase</h2>
-  <div id="askPrompt" style="margin-bottom:14px;"></div>
-  <div class="avatars" id="avatarRow"></div>
-</div>
-
-<!-- ============================================================
-     VOTE SCREEN
-============================================================ -->
-<div id="voteScreen" class="hidden card">
-  <h2>Vote the Odd One</h2>
-  <div class="avatars" id="voteRow"></div>
-</div>
-
-</div><!-- end container -->
-
-<!-- ============================================================
-     STICKY FOOTER
-============================================================ -->
-<div class="sticky">
-  <button class="sticky-btn" id="stickyAction">Next</button>
-</div>
-
-<!-- ============================================================
-     MODAL (fixed + safe)
-============================================================ -->
-<div id="modal" class="modal">
-  <div class="modal-card">
-    <div id="modalContent"></div>
-    <button class="btn" id="modalOk">OK</button>
-  </div>
-</div>
-
-<!-- ============================================================
-     SCRIPT — FIXED & OPTIMIZED
-============================================================ -->
 <script>
-const setup = $('#setupScreen');
-const reveal = $('#revealScreen');
-const ask = $('#askScreen');
-const vote = $('#voteScreen');
-
-const modal = $('#modal');
-const modalContent = $('#modalContent');
-const modalOk = $('#modalOk');
-
-const stickyAction = $('#stickyAction');
-
-const playerCountEl = $('#playerCount');
-const wordListEl = $('#wordList');
-const promptsEl = $('#prompts');
-const minAsksEl = $('#minAsks');
-const totalTurnsEl = $('#totalTurns');
-
-const tapRevealBtn = $('#tapReveal');
-const nextRevealBtn = $('#nextReveal');
-
-const askHeader = $('#askHeader');
-const askPrompt = $('#askPrompt');
-const avatarRow = $('#avatarRow');
-const voteRow = $('#voteRow');
-
-function $(q){ return document.querySelector(q); }
-
 /* ============================================================
-   GAME STATE
-============================================================ */
-let state = {
-  n:6,
-  words:[],
-  prompts:[],
-  revealIndex:0,
-  oddIndex:0,
-  assignments:[],
-  askTurns:0,
-  totalTurns:0,
-  askedCounts:[],
-};
+   AqZone — MoleHunt single-file app
+   - Firebase + WebRTC signaling (Realtime DB) placeholders
+   - Paste your Firebase config into FIREBASE_CONFIG below
+   - NOTE: This file is intentionally verbose & commented for clarity
+   ============================================================ */
 
-/* ============================================================
-   START GAME SETUP
-============================================================ */
-$('#startGame').onclick = ()=>{
-  state.n = +playerCountEl.value;
-  state.words = wordListEl.value.split(',').map(w=>w.trim()).filter(Boolean);
-  state.prompts = promptsEl.value.split(',').map(w=>w.trim()).filter(Boolean);
+(async function(){
+  // ------------------------------
+  // Helpers & DOM refs
+  // ------------------------------
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+  const id = id => document.getElementById(id);
 
-  const minAsk = +minAsksEl.value || 1;
-  let T = +totalTurnsEl.value;
-  if(!T || T<=0) T = minAsk * state.n;
-  state.totalTurns = T;
+  // DOM refs
+  const playerSlider = id('playerSlider');
+  const playerCount = id('playerCount');
+  const wordBank = id('wordBank');
+  const wordCount = id('wordCount');
+  const autoWordsBtn = id('autoWords');
+  const clearWordsBtn = id('clearWords');
+  const createRoomBtn = id('createRoomBtn');
+  const publicSetupBtn = id('publicSetupBtn');
+  const lobbyList = id('lobbyList');
+  const roomIdDisplay = id('roomIdDisplay');
+  const joinedCount = id('joinedCount');
+  const startGameBtn = id('startGameBtn');
+  const endRoomBtn = id('endRoomBtn');
+  const overlay = id('overlay');
+  const modalContent = id('modalContent');
+  const stickyPrimary = id('stickyPrimary');
+  const shareLink = id('shareLink');
+  const copyLink = id('copyLink');
+  const qrWrap = id('qrWrap');
+  const animSelect = id('animSelect');
+  const soundToggle = id('soundToggle');
+  const darkToggle = id('darkToggle');
+  const statusText = id('statusText');
 
-  state.revealIndex = 0;
-  state.askTurns = 0;
-  state.askedCounts = Array(state.n).fill(0);
+  const local = {
+    settings: JSON.parse(localStorage.getItem('aqzone_settings') || '{}')
+  };
 
-  // assign odd word
-  state.oddIndex = Math.floor(Math.random()*state.n);
-  state.assignments = [];
-  for(let i=0;i<state.n;i++){
-    state.assignments.push(i===state.oddIndex ? state.words[0] : state.words[1]);
+  function saveSettings(){ localStorage.setItem('aqzone_settings', JSON.stringify(local.settings||{})); }
+
+  // init UI with local settings
+  animSelect.value = local.settings.anim || 'auto';
+  soundToggle.checked = !!local.settings.sound;
+  darkToggle.checked = !!local.settings.dark;
+  if(local.settings.dark) document.documentElement.style.background = '#071022';
+
+  // ------------------------------
+  // Animation level auto-detect
+  // ------------------------------
+  function detectAnimationLevel(){
+    if(animSelect.value && animSelect.value !== 'auto') return animSelect.value;
+    // Respect prefers-reduced-motion
+    const prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(prm) return 'low';
+    // heuristics: screen size + device memory
+    const width = Math.max(window.innerWidth, screen.width);
+    const memory = navigator.deviceMemory || 4;
+    const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 1;
+    if(width > 1200 && !isTouch && memory >= 4) return 'high';
+    if(width > 700 && memory >= 2) return 'medium';
+    return 'low';
+  }
+  function getAnimLevel(){ return detectAnimationLevel(); }
+  animSelect.addEventListener('change', ()=>{ local.settings.anim = animSelect.value; saveSettings(); });
+
+  // ------------------------------
+  // Avatar variants
+  // ------------------------------
+  const AVATAR_VARIANTS = ['hat','brim','glasses','mask','hood','plain'];
+  function avatarForIndex(i){
+    const v = AVATAR_VARIANTS[i % AVATAR_VARIANTS.length];
+    // simple stylized text icons (SVG or emoji could be used)
+    const map = {hat:'🎩',brim:'🕶️',glasses:'👓',mask:'🕵️',hood:'🧥',plain:'👤'};
+    return map[v]||'👤';
   }
 
-  setup.classList.add('hidden');
-  reveal.classList.remove('hidden');
-
-  updateRevealUI();
-};
-
-/* ============================================================
-   REVEAL PHASE
-============================================================ */
-function updateRevealUI(){
-  tapRevealBtn.textContent = "Reveal";
-  $('#revealTitle').textContent = `Player ${state.revealIndex+1} — Tap to reveal`;
-}
-
-tapRevealBtn.onclick = ()=>{
-  tapRevealBtn.textContent = state.assignments[state.revealIndex];
-};
-
-nextRevealBtn.onclick = ()=>{
-  state.revealIndex++;
-  if(state.revealIndex >= state.n){
-    reveal.classList.add('hidden');
-    startAskPhase();
-    return;
+  // ------------------------------
+  // Word bank helpers
+  // ------------------------------
+  function setWordCount(){
+    const words = parseWordBank();
+    wordCount.textContent = words.length;
   }
-  updateRevealUI();
-};
-
-/* ============================================================
-   ASK PHASE
-============================================================ */
-function startAskPhase(){
-  ask.classList.remove('hidden');
-  buildAvatars();
-  stickyAction.textContent = "Next Ask";
-}
-
-function buildAvatars(){
-  avatarRow.innerHTML='';
-  for(let i=0;i<state.n;i++){
-    const a = document.createElement('div');
-    a.className='avatar';
-    a.textContent = i+1;
-    avatarRow.appendChild(a);
+  function parseWordBank(){
+    const raw = wordBank.value || '';
+    const arr = raw.split(',').map(s=>s.trim()).filter(Boolean);
+    return arr.slice(0,150);
   }
-}
-
-function choosePair(){
-  let a = Math.floor(Math.random()*state.n);
-  let t = Math.floor(Math.random()*state.n);
-  while(t===a) t = Math.floor(Math.random()*state.n);
-  return {asker:a, target:t};
-}
-
-stickyAction.onclick = ()=>{
-  if(ask.classList.contains('hidden')) return;
-
-  if(state.askTurns >= state.totalTurns){
-    if(state.askTurns>0) endAskPhase();
-    return;
-  }
-
-  const p = choosePair();
-  state.askedCounts[p.asker]++;
-  state.askTurns++;
-
-  const prompt = state.prompts[Math.floor(Math.random()*state.prompts.length)];
-  askPrompt.textContent = `Player ${p.asker+1} → Player ${p.target+1}: ${prompt}`;
-
-  highlightAvatars(p.asker,p.target);
-
-  if(state.askTurns >= state.totalTurns){
-    setTimeout(endAskPhase,200);
-  }
-};
-
-function highlightAvatars(a,t){
-  [...avatarRow.children].forEach((el,i)=>{
-    el.classList.remove('bounce','pulse');
-    if(i===a) el.classList.add('bounce');
-    if(i===t) el.classList.add('pulse');
+  autoWordsBtn.addEventListener('click', ()=>{
+    // simple generator with categories
+    const pool = ["Birthday","Toothbrush","Laptop","Wallet","Charger","Watch","Phone","Remote","Camera","Book","Bottle","Keys","Earphones","Lamp","Pillow","Towel","Notebook","Pen","Sunglasses","Mask","Rice","Pan","Cup","Plate","Bag","Umbrella","Mango","Banana","Apple","Kettle","Spoon","Fork","Soap","Shampoo","Toothpaste","Helmet","Gloves","Scarf","Blanket","Ticket","Passport","Slippers","Clock","Charger cable","Mango","Guitar","Piano","Skateboard","Headphones","Backpack","Jacket","Sneakers","Perfume","Lipstick","Comb","Brush","Watch","Wallet","Mirror","Ring","TV","Chair","Table","Car","Bus","Train","Boat","Spoon","Fork","Candle","Notebook","Diary","Keychain","Slippers","Bottle cap","Bottle opener","Lighter","Torch","Fan","Air Conditioner","Fridge","Camera","Tripod","Microphone","Keyboard","Mouse","Monitor"];
+    // shuffle and take up to 40 as default
+    const shuffled = pool.sort(()=>Math.random()-0.5);
+    wordBank.value = shuffled.slice(0,40).join(', ');
+    setWordCount();
   });
-}
+  clearWordsBtn.addEventListener('click', ()=>{ wordBank.value=''; setWordCount(); });
 
-/* ============================================================
-   END ASK PHASE → VOTE
-============================================================ */
-function endAskPhase(){
-  ask.classList.add('hidden');
-  showModal("Ask phase completed! Vote who you think is the odd one.");
-  buildVote();
-}
+  wordBank.addEventListener('input', setWordCount);
+  setWordCount();
 
-function buildVote(){
-  voteRow.innerHTML='';
-  for(let i=0;i<state.n;i++){
-    const v = document.createElement('div');
-    v.className='avatar';
-    v.textContent = i+1;
-    v.onclick = ()=> revealResult(i);
-    voteRow.appendChild(v);
+  // ------------------------------
+  // Room & Firebase placeholders
+  // ------------------------------
+  // --------------- IMPORTANT ---------------
+  // Paste your Firebase config below into FIREBASE_CONFIG variable.
+  // Create a Firebase project and enable Realtime Database (rules temporary open).
+  // I include an init function that uses these values.
+  // ------------------------------------------
+  const FIREBASE_CONFIG = null; // <<---- Paste your Firebase config object here
+
+  // We'll dynamically load firebase script when needed
+  let firebaseApp = null, firebaseDB = null;
+  async function loadFirebase(){
+    if(firebaseApp) return;
+    if(!FIREBASE_CONFIG) return;
+    // load scripts
+    await new Promise((res,rej)=>{
+      const s = document.createElement('script');
+      s.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';
+      s.onload=res; s.onerror=rej; document.head.appendChild(s);
+    });
+    await new Promise((res,rej)=>{
+      const s = document.createElement('script');
+      s.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';
+      s.onload=res; s.onerror=rej; document.head.appendChild(s);
+    });
+    // init
+    firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
+    firebaseDB = firebase.database();
+    statusText.textContent = 'Firebase loaded';
   }
-  vote.classList.remove('hidden');
-  stickyAction.textContent = "Waiting…";
-  stickyAction.disabled = true;
-}
 
+  // ------------------------------
+  // Room logic (create/join room)
+  // ------------------------------
+  // Room model in DB:
+  // rooms/{roomId} = {pin, hostId, createdAt, expiresAt, players:{id:{name,avatar}}, signals: {peerId: {offer/answer/ice...}}}
+  let localClientId = `c_${Math.random().toString(36).slice(2,9)}`;
+  let currentRoom = null;
+  let isHost = false;
+  let players = []; // local lobby list [{id,name,avatar}]
+
+  function generatePin(){ return Math.floor(1000 + Math.random()*9000).toString(); }
+
+  async function createPrivateRoom(){
+    if(!FIREBASE_CONFIG){
+      alert('Firebase config not set. Paste your config in the file to enable real-time rooms.');
+      return;
+    }
+    await loadFirebase();
+    const pin = generatePin();
+    const roomKey = 'room_' + Math.random().toString(36).slice(2,8);
+    const roomRef = firebaseDB.ref('rooms/' + roomKey);
+    const expiresAt = Date.now() + 24*3600*1000; // 24 hours
+    const roomObj = { pin, hostId: localClientId, createdAt: Date.now(), expiresAt, settings: {players: parseInt(playerSlider.value,10)} };
+    await roomRef.set(roomObj);
+    // add host as player
+    await firebaseDB.ref(`rooms/${roomKey}/players/${localClientId}`).set({name:'Host',avatar:0,joinedAt:Date.now()});
+    // set local
+    currentRoom = roomKey;
+    isHost = true;
+    roomIdDisplay.textContent = pin + ' • ' + roomKey;
+    shareLink.value = location.href + '#room=' + roomKey + '&pin=' + pin;
+    id('joinedCount').textContent = '1/' + playerSlider.value;
+    startListeningRoom(roomKey);
+    renderLobby();
+    updateUIRoomCreated();
+  }
+
+  function updateUIRoomCreated(){
+    startGameBtn.disabled = false;
+    endRoomBtn.disabled = false;
+  }
+
+  async function startListeningRoom(roomKey){
+    await loadFirebase();
+    const ref = firebaseDB.ref('rooms/' + roomKey + '/players');
+    ref.on('value', snap=>{
+      const val = snap.val() || {};
+      players = Object.keys(val).map(k=>({id:k, ...val[k]}));
+      renderLobby();
+    });
+    // cleanup hook: remove room on window unload if host
+    window.addEventListener('beforeunload', ()=>{
+      if(isHost && currentRoom) firebaseDB.ref('rooms/' + currentRoom).remove().catch(()=>{});
+    });
+  }
+
+  // join flow via PIN from link or manual
+  async function joinRoomByLink(roomKey, pin, codename){
+    if(!FIREBASE_CONFIG){ alert('Realtime disabled: add Firebase config'); return; }
+    await loadFirebase();
+    const roomRef = firebaseDB.ref('rooms/' + roomKey);
+    const snap = await roomRef.once('value');
+    const room = snap.val();
+    if(!room){ alert('Room not found'); return; }
+    if(room.pin !== pin){ alert('PIN mismatch'); return; }
+    // add player
+    const avatarIdx = Math.floor(Math.random()*AVATAR_VARIANTS.length);
+    await firebaseDB.ref(`rooms/${roomKey}/players/${localClientId}`).set({name: codename||('Agent'+localClientId.slice(-3)), avatar: avatarIdx, joinedAt:Date.now()});
+    currentRoom = roomKey;
+    isHost = (room.hostId === localClientId);
+    roomIdDisplay.textContent = room.pin + ' • ' + roomKey;
+    startListeningRoom(roomKey);
+    renderLobby();
+    // show entering HQ
+    showEnteringHQ(codename || 'Agent');
+  }
+
+  // simple render lobby
+  function renderLobby(){
+    lobbyList.innerHTML = '';
+    players.forEach((p,i)=>{
+      const el = document.createElement('div');
+      el.style.display='flex';el.style.alignItems='center';el.style.justifyContent='space-between';el.style.padding='6px 0';
+      el.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><div class="avatar small">${avatarForIndex(p.avatar||i)}</div><div><div style="font-weight:700">${p.name||'Agent'}</div><div class="small muted">Joined</div></div></div><div class="small muted">${p.id=== (players[0] && players[0].id) ? 'Host':''}</div>`;
+      lobbyList.appendChild(el);
+    });
+    joinedCount.textContent = `${players.length}/${playerSlider.value}`;
+  }
+
+  // update share link & QR (simple text copy; QR libs avoided for single-file)
+  copyLink.addEventListener('click', ()=>{ shareLink.select(); document.execCommand('copy'); alert('Link copied'); });
+
+  // public setup: share a non-live setup link (S1 style)
+  publicSetupBtn.addEventListener('click', ()=>{
+    const params = new URLSearchParams();
+    params.set('players', playerSlider.value);
+    params.set('words', 'encoded'); // we won't include words public by default
+    const url = location.href.split('#')[0] + '#setup=' + encodeURIComponent(params.toString());
+    shareLink.value = url;
+    alert('Copy the setup link to share. Note: this is not a live room.');
+  });
+
+  // End room
+  endRoomBtn.addEventListener('click', async ()=>{
+    if(!currentRoom) return;
+    if(!confirm('End room? This will remove the room for all players.')) return;
+    await loadFirebase();
+    await firebaseDB.ref('rooms/' + currentRoom).remove().catch(()=>{});
+    currentRoom = null; isHost = false;
+    roomIdDisplay.textContent = 'No Room';
+    lobbyList.innerHTML = '';
+    joinedCount.textContent = '0/0';
+    startGameBtn.disabled = true; endRoomBtn.disabled = true;
+    shareLink.value = '';
+    alert('Room ended.');
+  });
+
+  // ------------------------------
+  // Entering HQ animation (join)
+  // ------------------------------
+  function showEnteringHQ(name){
+    openOverlay(`<div class="center"><div style="font-weight:900;font-size:18px">Entering HQ…</div><div class="small muted" style="margin-top:8px">Decrypting Access…</div><div style="margin-top:18px"><div class="pill">Welcome, ${escapeHtml(name)}</div></div><div style="margin-top:12px" class="small muted">Syncing agents…</div></div>`, {autoClose:1200});
+  }
+
+  // ------------------------------
+  // Game flow state (MoleHunt)
+  // ------------------------------
+  let gameState = null; // object during active game
+  // Game phases: reveal (private reveals) -> ask -> discussion -> vote -> reveal result
+
+  // build MoleHunt panel
+  $$('#card-molehunt, #card-guessliar, #card-mafia, #card-soon1, #card-soon2').forEach(el=>{
+    el.addEventListener('click', ()=> openGamePanel(el.dataset.game || 'molehunt'));
+  });
+
+  function openGamePanel(gameId){
+    // card stack animation (brief)
+    const html = renderMoleHuntSetup();
+    openOverlay(html, {full:true});
+    // init local setup UI listeners inside modal
+    initMoleHuntSetup();
+  }
+
+  // ------------------------------
+  // HTML fragments for MoleHunt Setup
+  // ------------------------------
+  function renderMoleHuntSetup(){
+    return `
+      <div style="display:flex;gap:12px;flex-direction:column">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-weight:900;font-size:20px">MoleHunt</div><div class="small muted">AqZone — Hunt the odd one</div></div>
+          <div><button class="btn btn-ghost" id="closePanel">Close</button></div>
+        </div>
+        <div class="tutorial">
+          <div style="max-width:640px">
+            <div style="font-weight:800">Quick Tutorial</div>
+            <div class="small muted" style="margin-top:6px">Visual guide: Ask questions → Review Your Clues → Vote</div>
+            <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+              <div style="width:100px;text-align:center">🗣️<div class="small muted">Ask</div></div>
+              <div style="width:100px;text-align:center">🔍<div class="small muted">Review</div></div>
+              <div style="width:100px;text-align:center">🎯<div class="small muted">Vote</div></div>
+            </div>
+            <div style="margin-top:10px" class="small muted">Auto-advances in 15s. Or tap Start to skip tutorial.</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <div style="flex:1">
+            <label>Players</label>
+            <input id="setupPlayers" type="range" min="5" max="10" value="${playerSlider.value}" />
+            <div class="small muted" style="margin-top:6px">Use slider to choose players</div>
+          </div>
+          <div style="width:220px">
+            <label>Room mode</label>
+            <select id="setupRoomMode"><option value="private">Private (PIN)</option><option value="public">Share Link</option></select>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button id="startMole" class="btn btn-primary">Start (Host Creates)</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function initMoleHuntSetup(){
+    id('closePanel').addEventListener('click', closeOverlay);
+    const setupPlayers = id('setupPlayers');
+    setupPlayers.addEventListener('input', ()=>{ /* future */ });
+    // autoadvance tutorial
+    setTimeout(()=>{ /* we'd auto move but user can start */ }, 15000);
+    id('startMole').addEventListener('click', ()=>{
+      // create room if not existing
+      if(!currentRoom){
+        createPrivateRoom().then(()=> {
+          closeOverlay();
+          // host starts lobby ready screen (host controls visible)
+          openMoleHuntLobby();
+        });
+      } else {
+        closeOverlay();
+        openMoleHuntLobby();
+      }
+    });
+  }
+
+  // ------------------------------
+  // Lobby -> MoleHunt gameplay
+  // ------------------------------
+  function openMoleHuntLobby(){
+    // open full-screen lobby modal with player list and Start button
+    const html = `
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-weight:900">MoleHunt — Lobby</div><div class="small muted">Waiting for players...</div></div>
+          <div><div class="small muted">Room: <strong>${roomIdDisplay.textContent}</strong></div></div>
+        </div>
+        <div id="lobbyPlayersUI" style="min-height:120px"></div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button id="startMatchBtn" class="btn btn-primary" ${isHost? '': 'disabled'}>Start Match</button>
+          <button id="closeLobbyBtn" class="btn btn-ghost">Close</button>
+        </div>
+      </div>
+    `;
+    openOverlay(html, {full:true});
+    renderLobbyUI();
+    id('startMatchBtn').addEventListener('click', ()=> {
+      if(!isHost) return alert('Host only');
+      startMoleMatch();
+    });
+    id('closeLobbyBtn').addEventListener('click', closeOverlay);
+  }
+
+  function renderLobbyUI(){
+    const wrap = id('lobbyPlayersUI');
+    wrap.innerHTML = '';
+    players.forEach((p,i)=>{
+      const el = document.createElement('div');
+      el.style.display='flex';el.style.alignItems='center';el.style.justifyContent='space-between';el.style.padding='6px 0';
+      el.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><div class="avatar small">${avatarForIndex(p.avatar||i)}</div><div><div style="font-weight:700">${p.name||('Agent'+i)}</div><div class="small muted">Ready</div></div></div><div>${p.id===players[0]?.id?'<span class="small muted">Host</span>':''}</div>`;
+      wrap.appendChild(el);
+    });
+  }
+
+  // ------------------------------
+  // Start match orchestration (host)
+  // ------------------------------
+  function startMoleMatch(){
+    // Host selects assignments (hidden) and pushes to DB; then signal peers to transition to Reveal Phase
+    // Build gameState and write to firebase under rooms/{roomId}/gameState for signaling
+    const n = Math.max(5, Math.min(parseInt(playerSlider.value,10)||6,10));
+    // collect hidden words from wordBank or auto-gen if empty
+    let words = parseWordBank();
+    if(words.length < 2){
+      // fallback minimal
+      words = ['Red','Blue','Green','Yellow','Black','White'];
+    }
+    // choose base word and odd word
+    const base = words[Math.floor(Math.random() * words.length)];
+    let other = words[Math.floor(Math.random() * words.length)];
+    while(other === base) other = words[Math.floor(Math.random() * words.length)];
+    // assignments
+    const assign = Array(n).fill(base);
+    const oddIndex = Math.floor(Math.random()*n);
+    assign[oddIndex] = other;
+    // prepare gameState
+    gameState = {
+      n,
+      players: players.slice(0,n).map((p,i)=>({id:p.id,name:p.name||('Agent'+i),avatar:p.avatar||i})),
+      assignments: assign, // host only in DB? We'll store encrypted?: For simplicity we store assignments in DB but they are hidden to UI; in practice encryption recommended.
+      oddIndex,
+      phase:'reveal',
+      revealIndex:0,
+      askTurns:0,
+      askedCounts: Array(n).fill(0),
+      totalTurns: computeTotalTurns(n),
+      history: []
+    };
+    // write to firebase (rooms/{roomId}/gameState) for peers to pick up
+    if(firebaseDB && currentRoom){
+      firebaseDB.ref(`rooms/${currentRoom}/gameState`).set(gameState);
+      firebaseDB.ref(`rooms/${currentRoom}/meta`).set({startedAt:Date.now(), host: localClientId});
+    }
+    closeOverlay();
+    openRevealFlow();
+  }
+
+  // compute total turns per dynamic difficulty table
+  function computeTotalTurns(n){
+    if(n <= 6) return Math.max(5, n); // 5-7
+    if(n <= 8) return Math.max(7, n+1); // 7-10
+    return Math.max(10, n+2); // 10-12
+  }
+
+  // ------------------------------
+  // Reveal Phase (private reveals)
+  // ------------------------------
+  async function openRevealFlow(){
+    // create reveal UI in overlay
+    const html = `
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-weight:900">Reveal Phase</div><div class="small muted">Pass the device to each agent for private reveal</div></div>
+          <div><div class="small muted">Players: ${gameState.n}</div></div>
+        </div>
+        <div class="card-flip" id="revealCardWrap">
+          <div class="card-inner" id="revealInner">
+            <div class="card-front" id="frontCard">
+              <div class="center"><div class="small muted">Player</div><div class="big" id="revealPlayer">1</div><div class="small muted">Tap to reveal your card</div></div>
+            </div>
+            <div class="card-back" id="backCard"><div class="reveal-word" id="backWord">??</div></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:center">
+          <button id="revealBtn" class="btn btn-primary">Reveal</button>
+          <button id="nextRevealBtn" class="btn btn-ghost">Next</button>
+        </div>
+      </div>
+    `;
+    openOverlay(html, {full:true});
+    // init reveal handlers
+    const revealPlayerEl = id('revealPlayer');
+    const backWordEl = id('backWord');
+    const revealInner = id('revealInner');
+    let flipped = false;
+
+    function showBackForIndex(idx){
+      const v = gameState.assignments[idx] || '??';
+      backWordEl.textContent = v;
+      revealInner.style.transform = 'rotateY(180deg)';
+      flipped = true;
+    }
+    function hideBack(){
+      revealInner.style.transform = 'rotateY(0deg)';
+      flipped = false;
+    }
+
+    id('revealPlayer').textContent = (gameState.revealIndex + 1);
+    id('revealBtn').addEventListener('click', ()=>{
+      showBackForIndex(gameState.revealIndex);
+    });
+    id('nextRevealBtn').addEventListener('click', ()=>{
+      hideBack();
+      gameState.revealIndex++;
+      if(gameState.revealIndex >= gameState.n){
+        // done reveal
+        // update DB gameState
+        if(firebaseDB && currentRoom){
+          firebaseDB.ref(`rooms/${currentRoom}/gameState`).set(gameState);
+        }
+        closeOverlay();
+        openAskPhase();
+        return;
+      }
+      id('revealPlayer').textContent = (gameState.revealIndex + 1);
+    });
+  }
+
+  // ------------------------------
+  // Ask Phase
+  // ------------------------------
+  function openAskPhase(){
+    // UI with ask prompt area and avatars line
+    const html = `
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-weight:900">Ask Phase</div><div class="small muted">Press Next to get who asks whom</div></div>
+          <div class="small muted">Turns: <span id="askTurnsUI">${gameState.askTurns}</span>/<span id="askTotalUI">${gameState.totalTurns}</span></div>
+        </div>
+        <div id="askPrompt" class="ask-prompt">Player 1 → Player 2</div>
+        <div class="map" id="askMapWrap"><svg class="map-svg" id="askMapSVG"></svg></div>
+        <div class="avatars" id="askAvatars"></div>
+        <div style="display:flex;gap:10px;justify-content:center">
+          <button id="nextAskBtn_ux" class="btn btn-primary">Next Ask</button>
+          <button id="finishAskBtn_ux" class="btn btn-ghost">Finish Ask Phase</button>
+        </div>
+        <div class="small muted">Players will ask questions out loud. App only shows the pair.</div>
+      </div>
+    `;
+    openOverlay(html, {full:true});
+    // render avatars
+    const askAvatars = id('askAvatars');
+    askAvatars.innerHTML = '';
+    gameState.players.forEach((p,i)=>{
+      const a = document.createElement('div'); a.className='avatar'; a.textContent = avatarForIndex(p.avatar||i); a.dataset.idx = i; askAvatars.appendChild(a);
+    });
+    // map svg
+    const svg = id('askMapSVG');
+    function drawConnections(history){
+      // clear svg
+      while(svg.firstChild) svg.removeChild(svg.firstChild);
+      // create simple circle layout for players
+      const w = svg.clientWidth || 600, h = svg.clientHeight || 200;
+      const cx = w/2, cy = h/2, r = Math.min(w,h)/3;
+      gameState.players.forEach((p,i)=>{
+        const angle = (Math.PI*2) * (i / gameState.players.length) - Math.PI/2;
+        const x = cx + Math.cos(angle)*r;
+        const y = cy + Math.sin(angle)*r;
+        const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        circle.setAttribute('cx',x); circle.setAttribute('cy',y); circle.setAttribute('r',14); circle.setAttribute('fill','#fff'); circle.setAttribute('stroke','#eee'); svg.appendChild(circle);
+        const txt = document.createElementNS('http://www.w3.org/2000/svg','text'); txt.setAttribute('x',x); txt.setAttribute('y',y+4); txt.setAttribute('text-anchor','middle'); txt.setAttribute('font-size','12'); txt.textContent = i+1; svg.appendChild(txt);
+      });
+      // draw history lines animated
+      history.forEach((hObj,idx)=>{
+        const a = hObj.asker, t = hObj.target;
+        const angleA = (Math.PI*2)*(a/gameState.players.length)-Math.PI/2;
+        const angleB = (Math.PI*2)*(t/gameState.players.length)-Math.PI/2;
+        const x1 = cx + Math.cos(angleA)*r, y1 = cy + Math.sin(angleA)*r;
+        const x2 = cx + Math.cos(angleB)*r, y2 = cy + Math.sin(angleB)*r;
+        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+        const d = `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`;
+        path.setAttribute('d',d);
+        path.setAttribute('stroke','#ff9f6b');
+        path.setAttribute('stroke-width','3');
+        path.setAttribute('fill','none');
+        path.setAttribute('stroke-linecap','round');
+        // animation via stroke-dasharray
+        const len = 1000;
+        path.setAttribute('stroke-dasharray',len);
+        path.setAttribute('stroke-dashoffset',len);
+        svg.appendChild(path);
+        // animate draw
+        const anim = path.animate([{strokeDashoffset:len},{strokeDashoffset:0}],{duration:500,delay:idx*200,fill:'forwards',easing:'ease-out'});
+      });
+    }
+
+    // next ask logic (randomized asker/target with bias)
+    function choosePair(){
+      // choose asker by minimal askedCounts
+      const minAsked = Math.min(...gameState.askedCounts);
+      const candidates = [];
+      gameState.askedCounts.forEach((c,i)=>{ if(c===minAsked) candidates.push(i); });
+      let asker = candidates[Math.floor(Math.random()*candidates.length)];
+      // superAsker: optional, but we'll bias mole protection slightly
+      // choose target weighted towards oddIndex
+      function weightedIndex(n, fav){
+        const weights = Array(n).fill(1);
+        if(typeof fav === 'number') weights[fav] = 4;
+        let total = weights.reduce((a,b)=>a+b,0), r=Math.random()*total;
+        for(let i=0;i<n;i++){ r-=weights[i]; if(r<=0) return i; }
+        return n-1;
+      }
+      let target = weightedIndex(gameState.n, gameState.oddIndex);
+      if(target === asker){
+        const others = Array.from({length:gameState.n},(_,i)=>i).filter(i=>i!==asker);
+        target = others[Math.floor(Math.random()*others.length)];
+      }
+      return {asker,target};
+    }
+
+    id('nextAskBtn_ux').addEventListener('click', ()=>{
+      if(gameState.askTurns >= gameState.totalTurns){
+        if(gameState.askTurns>0) finishAskPhase();
+        return;
+      }
+      const pair = choosePair();
+      gameState.askTurns++;
+      gameState.askedCounts[pair.asker] += 1;
+      const promptText = `Player ${pair.asker+1} → Player ${pair.target+1}`;
+      id('askPrompt').textContent = promptText;
+      // visual: bounce asker, pulse target
+      askAvatars.querySelectorAll('.avatar').forEach((el,idx)=>{
+        el.classList.remove('bounce','pulse');
+        if(idx === pair.asker) el.classList.add('bounce');
+        if(idx === pair.target) el.classList.add('pulse');
+      });
+      // push to history
+      gameState.history.push({asker:pair.asker,target:pair.target});
+      // draw map animation
+      drawConnections(gameState.history);
+      id('askTurnsUI').textContent = gameState.askTurns;
+      // update DB
+      if(firebaseDB && currentRoom) firebaseDB.ref(`rooms/${currentRoom}/gameState`).set(gameState);
+      // auto finish
+      if(gameState.askTurns >= gameState.totalTurns) setTimeout(finishAskPhase, 400);
+    });
+
+    id('finishAskBtn_ux').addEventListener('click', finishAskPhase);
+
+    // initial render
+    drawConnections(gameState.history || []);
+  }
+
+  // ------------------------------
+  // Finish Ask Phase -> Discussion
+  // ------------------------------
+  function finishAskPhase(){
+    // set phase
+    gameState.phase = 'discussion';
+    if(firebaseDB && currentRoom) firebaseDB.ref(`rooms/${currentRoom}/gameState`).set(gameState);
+    openDiscussion();
+  }
+
+  function openDiscussion(){
+    const html = `
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-weight:900">Review Your Clues</div><div class="small muted">Analyze who looked odd</div></div>
+          <div class="small muted">Duration: Host continue</div>
+        </div>
+        <div class="map" id="discussionMap"><svg class="map-svg" id="discussionSVG"></svg></div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button id="continueToVote" class="btn btn-primary">Continue to Vote</button>
+        </div>
+      </div>
+    `;
+    openOverlay(html, {full:true});
+    // draw final map (static but with drawn lines)
+    const svg = id('discussionSVG');
+    // reuse same drawing logic as askMap
+    const history = gameState.history || [];
+    // draw players and history
+    (function draw(){
+      while(svg.firstChild) svg.removeChild(svg.firstChild);
+      const w = svg.clientWidth || 600, h = svg.clientHeight || 220, cx = w/2, cy = h/2, r = Math.min(w,h)/3;
+      gameState.players.forEach((p,i)=>{
+        const angle = (Math.PI*2)*(i/gameState.players.length)-Math.PI/2;
+        const x = cx + Math.cos(angle)*r;
+        const y = cy + Math.sin(angle)*r;
+        const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        circle.setAttribute('cx',x); circle.setAttribute('cy',y); circle.setAttribute('r',18); circle.setAttribute('fill','#fff'); circle.setAttribute('stroke','#eee'); svg.appendChild(circle);
+        const txt = document.createElementNS('http://www.w3.org/2000/svg','text'); txt.setAttribute('x',x); txt.setAttribute('y',y+6); txt.setAttribute('text-anchor','middle'); txt.setAttribute('font-size','12'); txt.textContent = p.name || (i+1); svg.appendChild(txt);
+      });
+      history.forEach((hObj,idx)=>{
+        const a = hObj.asker, t = hObj.target;
+        const angleA = (Math.PI*2)*(a/gameState.players.length)-Math.PI/2;
+        const angleB = (Math.PI*2)*(t/gameState.players.length)-Math.PI/2;
+        const x1 = cx + Math.cos(angleA)*r, y1 = cy + Math.sin(angleA)*r;
+        const x2 = cx + Math.cos(angleB)*r, y2 = cy + Math.sin(angleB)*r;
+        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+        const d = `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`;
+        path.setAttribute('d',d);
+        path.setAttribute('stroke','#ff9f6b');
+        path.setAttribute('stroke-width','4');
+        path.setAttribute('fill','none');
+        path.setAttribute('stroke-linecap','round');
+        svg.appendChild(path);
+      });
+    })();
+
+    id('continueToVote').addEventListener('click', ()=> {
+      gameState.phase='vote';
+      if(firebaseDB && currentRoom) firebaseDB.ref(`rooms/${currentRoom}/gameState`).set(gameState);
+      openVoteScreen();
+    });
+  }
+
+  // ------------------------------
+  // Vote Screen
+  // ------------------------------
+  function openVoteScreen(){
+    const html = `
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-weight:900">Vote</div><div class="small muted">Tap the player you think is the mole</div></div>
+          <div class="small muted">Players: ${gameState.players.length}</div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center" id="voteGrid"></div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button id="lockVoteBtn" class="btn btn-primary">Lock Vote</button>
+        </div>
+      </div>
+    `;
+    openOverlay(html, {full:true});
+    const voteGrid = id('voteGrid');
+    voteGrid.innerHTML = '';
+    gameState.players.forEach((p,i)=>{
+      const v = document.createElement('div'); v.className='avatar'; v.textContent = avatarForIndex(p.avatar||i); v.dataset.idx = i; v.style.cursor='pointer'; voteGrid.appendChild(v);
+      v.addEventListener('click', ()=> {
+        // mark selection
+        voteGrid.querySelectorAll('.avatar').forEach(el=>el.style.outline='none');
+        v.style.outline = '3px solid rgba(255,159,107,0.25)';
+        v.dataset.selected = 'true';
+      });
+    });
+    id('lockVoteBtn').addEventListener('click', ()=> {
+      // collect selected
+      const sel = voteGrid.querySelector('.avatar[data-selected="true"]');
+      if(!sel) return alert('Select someone to vote');
+      const idx = parseInt(sel.dataset.idx,10);
+      // store vote in gameState
+      gameState.votes = gameState.votes || [];
+      gameState.votes.push({voter: localClientId, voteFor: idx});
+      // For simplicity, host tallies votes in this demo (in prod we'd sync)
+      if(isHost && firebaseDB && currentRoom){
+        firebaseDB.ref(`rooms/${currentRoom}/gameState/votes`).set(gameState.votes);
+        // reveal result after tiny delay
+        setTimeout(revealResult, 600);
+      } else {
+        // non-host: write vote to DB signals for host to pick up
+        if(firebaseDB && currentRoom) firebaseDB.ref(`rooms/${currentRoom}/signals/votes/${localClientId}`).set({voteFor: idx, voter: localClientId});
+        openOverlay(`<div class="center"><div style="font-weight:900">Vote locked</div><div class="small muted">Waiting for host to reveal</div></div>`, {autoClose:3000});
+      }
+    });
+  }
+
+  // ------------------------------
+  // Reveal Result (host)
+  // ------------------------------
+  async function revealResult(){
+    // tally votes (simplified)
+    const votes = gameState.votes || [];
+    const tally = {};
+    votes.forEach(v=>{ tally[v.voteFor] = (tally[v.voteFor]||0)+1; });
+    let top = -1, topCount = -1;
+    Object.keys(tally).forEach(k=>{
+      if(tally[k] > topCount){ top = parseInt(k,10); topCount = tally[k]; }
+    });
+    const guessed = top;
+    const mole = gameState.oddIndex;
+    const correct = guessed === mole;
+    // show result UI
+    const txt = correct ? `Mole Identified! Player ${mole+1}` : `Mole Escaped. Mole was Player ${mole+1}`;
+    openOverlay(`<div style="text-align:center"><div style="font-weight:900">${txt}</div><div class="small muted" style="margin-top:8px">Word: ${escapeHtml(gameState.assignments[mole])}</div><div style="margin-top:12px"><button id="playAgainBtn" class="btn btn-primary">Play Again</button> <button id="backHubBtn" class="btn btn-ghost">Back to AqZone</button></div></div>`, {full:true});
+    // confetti
+    fireConfetti();
+    id('playAgainBtn').addEventListener('click', ()=> { closeOverlay(); startMoleMatch(); });
+    id('backHubBtn').addEventListener('click', ()=> { closeOverlay(); });
+  }
+
+  // ------------------------------
+  // Utility: Overlay open/close
+  // ------------------------------
+  function openOverlay(html, opts = {}) {
+    modalContent.innerHTML = html;
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden','false');
+    if(opts.full){
+      // no-op
+    }
+    // auto close if requested
+    if(opts.autoClose){
+      setTimeout(()=>{ closeOverlay(); }, opts.autoClose);
+    }
+  }
+  function closeOverlay(){
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden','true');
+    modalContent.innerHTML = '';
+  }
+  overlay.addEventListener('click', (e)=>{
+    if(e.target === overlay) closeOverlay();
+  });
+
+  // ------------------------------
+  // Confetti (canvas) — warm citrus
+  // ------------------------------
+  const confettiCanvas = id('confettiCanvas');
+  const confettiCtx = confettiCanvas.getContext && confettiCanvas.getContext('2d');
+  let confettiParticles = [];
+  function resizeCanvas(){
+    confettiCanvas.width = innerWidth;
+    confettiCanvas.height = innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+  function fireConfetti(count=60){
+    const level = getAnimLevel();
+    let num = count;
+    if(level === 'medium') num = Math.min(30, count);
+    if(level === 'low') num = Math.min(0, count);
+    const colors = ['#ffb84d','#ff5fa8','#ff8a4d','#ffd08a','#ffc0e0'];
+    for(let i=0;i<num;i++){
+      confettiParticles.push({
+        x: Math.random()*confettiCanvas.width,
+        y: -20 - Math.random()*100,
+        vx: Math.random()*6-3,
+        vy: Math.random()*4 + 2,
+        size: 6 + Math.random()*8,
+        color: colors[Math.floor(Math.random()*colors.length)],
+        rot: Math.random()*6.28,
+        life: 120 + Math.random()*60
+      });
+    }
+    if(confettiParticles.length) requestAnimationFrame(confettiStep);
+  }
+  function confettiStep(){
+    confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+    for(let i = confettiParticles.length-1; i>=0; i--){
+      const p = confettiParticles[i];
+      p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.rot += 0.1; p.life--;
+      confettiCtx.save();
+      confettiCtx.translate(p.x,p.y);
+      confettiCtx.rotate(p.rot);
+      confettiCtx.fillStyle = p.color;
+      confettiCtx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
+      confettiCtx.restore();
+      if(p.life <= 0 || p.y > confettiCanvas.height + 50) confettiParticles.splice(i,1);
+    }
+    if(confettiParticles.length) requestAnimationFrame(confettiStep);
+  }
+
+  // ------------------------------
+  // Small utils
+  // ------------------------------
+  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+
+  // ------------------------------
+  // Simple QR generator (data: base64 tiny svg) - fallback text
+  // ------------------------------
+  function generateSimpleQR(text){
+    // For single-file simplicity, we provide copy paste link only (no heavy QR lib).
+    qrWrap.innerHTML = `<div class="small muted">QR not available offline. Copy link instead.</div>`;
+  }
+
+  // ------------------------------
+  // Keyboard shortcuts
+  // ------------------------------
+  document.addEventListener('keydown',(e)=>{
+    if(e.key === 'Escape') { if(overlay.classList.contains('show')) closeOverlay(); }
+    if(e.key === 'Enter') {
+      // Enter triggers primary (if overlay open and there's a button)
+      const primary = modalContent.querySelector('.btn-primary');
+      if(primary) primary.click();
+    }
+  });
+
+  // ------------------------------
+  // Init: wire UI buttons
+  // ------------------------------
+  playerSlider.addEventListener('input', ()=>{
+    playerCount.textContent = playerSlider.value;
+    id('joinedCount').textContent = `${players.length}/${playerSlider.value}`;
+  });
+
+  createRoomBtn.addEventListener('click', createPrivateRoom);
+
+  startGameBtn.addEventListener('click', ()=> { if(isHost) startMoleMatch(); });
+
+  // Simple status
+  statusText.textContent = FIREBASE_CONFIG ? 'Realtime enabled' : 'Realtime not configured';
+
+  // expose some debug (optional)
+  window._aqzone = { gameState, players, createPrivateRoom, currentRoom };
+
+  // Done boot
+  console.log('AqZone loaded. Ready.');
+
+})(); // end IIFE
 /* ============================================================
-   REVEAL RESULT
-============================================================ */
-function revealResult(voteIndex){
-  let msg = (voteIndex === state.oddIndex)
-    ? `Correct! Player ${voteIndex+1} was the LIAR! 🎉`
-    : `Wrong! The liar was Player ${state.oddIndex+1}.`;
-
-  showModal(msg);
-}
-
-/* ============================================================
-   MODAL HANDLING (FIXED)
-============================================================ */
-function showModal(msg){
-  modalContent.innerHTML = msg;
-  modal.classList.add('active');
-}
-modalOk.onclick = ()=> modal.classList.remove('active');
-modal.onclick = (e)=>{ if(e.target===modal) modal.classList.remove('active'); };
-
-/* ============================================================
-   RANDOM WORD BUTTON
-============================================================ */
-$('#randomizeWords').onclick = ()=>{
-  const sample = ["Phone","Bottle","Shoes","Keys","Pillow","Mirror","Ring","Earbuds","TV","Pen"];
-  let w1 = sample[Math.floor(Math.random()*sample.length)];
-  let w2 = sample[Math.floor(Math.random()*sample.length)];
-  while(w2===w1) w2 = sample[Math.floor(Math.random()*sample.length)];
-  wordListEl.value = `${w1},${w2}`;
-};
+   README (small): Firebase quick setup
+   1) Go to https://console.firebase.google.com/ and create a project.
+   2) In Project settings -> Add app -> choose Web, copy the firebaseConfig object.
+   3) Enable Realtime Database from Firebase console (Database -> Create Database).
+      - For testing, choose test mode (open rules). For production, secure rules recommended.
+   4) Paste the firebaseConfig object near the top of this file:
+      const FIREBASE_CONFIG = { apiKey: '...', authDomain: '...', databaseURL: 'https://...'} ;
+   5) Commit index.html to GitHub repo. GitHub Pages will host it at https://<youruser>.github.io/<repo>/
+   6) Open the page on two devices and test: Host creates room -> others join with link or by opening URL with #room=...&pin=...
+   ============================================================ */
 </script>
 </body>
 </html>
